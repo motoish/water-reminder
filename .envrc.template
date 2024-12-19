@@ -1,0 +1,4 @@
+# This will be added to environment as environment variables.
+export SLACK_BOT_TOKEN=<YOUR_SLACK_BOT_TOKEN>
+export SLACK_SIGNING_SECRET=<YOUR_SLACK_SIGNING_SECRET>
+export SLACK_CHANNEL_ID=<YOUR_SLACK_CHANNEL_ID>
