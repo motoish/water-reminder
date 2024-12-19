@@ -1,48 +1,40 @@
-from slack_bolt import App
-from pytz import timezone
-from datetime import datetime
 import os
-import time
-from threading import Thread
-from flask import Flask
+from slack_bolt import App
+from datetime import datetime
+from pytz import timezone
 
-# Slack app
+# Initialize the Slack app using environment variables
 slack_app = App(
-    token=os.environ.get("SLACK_BOT_TOKEN"),
-    signing_secret=os.environ.get("SLACK_SIGNING_SECRET"),
+    token=os.getenv("SLACK_BOT_TOKEN"),
+    signing_secret=os.getenv("SLACK_SIGNING_SECRET"),
 )
 
+# Reminder message and channel ID
 reminder_message = "💧 Time to drink water! Stay hydrated!"
+channel_id = os.getenv("SLACK_CHANNEL_ID")
+
 
 def send_reminder():
-    jst = timezone('Asia/Tokyo')  # Define JST timezone
+    """
+    Sends a reminder message if the current time is during JST working hours (9 AM - 5 PM)
+    on weekdays (Monday - Friday).
+    """
+    jst = timezone("Asia/Tokyo")  # Define JST timezone
+    now = datetime.now(jst)
+    day = now.weekday()  # 0: Monday, 6: Sunday
+    hour = now.hour  # JST hour
 
-    while True:
-        now = datetime.now(jst)
-        day = now.weekday()  # 0: Monday, 6: Sunday
-        hour = now.hour  # JST hour
-        
-        if day < 5 and 9 <= hour <= 17:  # Weekdays, between 9 AM and 5 PM
-            try:
-                slack_app.client.chat_postMessage(
-                    channel=os.environ.get("SLACK_CHANNEL_ID"),
-                    text=reminder_message,
-                )
-            except Exception as e:
-                print(f"Error: {e}")
-        time.sleep(3600)  # Wait for 1 hour
+    if day < 5 and 9 <= hour <= 17:  # Weekdays, between 9 AM and 5 PM JST
+        try:
+            slack_app.client.chat_postMessage(
+                channel=channel_id,
+                text=reminder_message,
+            )
+            print(f"Reminder sent at {now.strftime('%Y-%m-%d %H:%M:%S')} JST")
+        except Exception as e:
+            print(f"Error sending message: {e}")
 
-# Start the reminder thread
-reminder_thread = Thread(target=send_reminder, daemon=True)
-reminder_thread.start()
-
-# Flask app for Render's port binding
-flask_app = Flask(__name__)
-
-@flask_app.route("/")
-def home():
-    return "Slack bot is running!"
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 3000))
-    flask_app.run(host="0.0.0.0", port=port)
+    # Call the reminder function (single execution for GitHub Actions workflow)
+    send_reminder()
