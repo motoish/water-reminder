@@ -1,7 +1,10 @@
 from slack_bolt import App
-from flask import Flask
+from pytz import timezone
+from datetime import datetime
 import os
+import time
 from threading import Thread
+from flask import Flask
 
 # Slack app
 slack_app = App(
@@ -12,12 +15,14 @@ slack_app = App(
 reminder_message = "💧 Time to drink water! Stay hydrated!"
 
 def send_reminder():
-    from datetime import datetime
-    import time
+    jst = timezone('Asia/Tokyo')  # Define JST timezone
 
     while True:
-        day = datetime.now().weekday()  # 0: Monday, 6: Sunday
-        if day < 5:  # Weekdays
+        now = datetime.now(jst)
+        day = now.weekday()  # 0: Monday, 6: Sunday
+        hour = now.hour  # JST hour
+        
+        if day < 5 and 9 <= hour <= 17:  # Weekdays, between 9 AM and 5 PM
             try:
                 slack_app.client.chat_postMessage(
                     channel=os.environ.get("SLACK_CHANNEL_ID"),
@@ -25,7 +30,7 @@ def send_reminder():
                 )
             except Exception as e:
                 print(f"Error: {e}")
-        time.sleep(3600)  # 1 hour
+        time.sleep(3600)  # Wait for 1 hour
 
 # Start the reminder thread
 reminder_thread = Thread(target=send_reminder, daemon=True)
