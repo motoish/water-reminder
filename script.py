@@ -1,7 +1,8 @@
+import datetime as dt
 import os
-from slack_bolt import App
-from datetime import datetime
+
 from pytz import timezone
+from slack_bolt import App
 
 # Initialize the Slack app using environment variables
 slack_app = App(
@@ -19,12 +20,12 @@ def send_reminder():
     Sends a reminder message if the current time is during JST working hours (9 AM - 5 PM)
     on weekdays (Monday - Friday).
     """
-    jst = timezone("Asia/Tokyo")  # Define JST timezone
-    now = datetime.now(jst)
-    day = now.weekday()  # 0: Monday, 6: Sunday
+    jst = dt.timezone(dt.timedelta(hours=+9), "JST")  # Define JST timezone
+    now = dt.datetime.now(jst)
     hour = now.hour  # JST hour
 
-    if day < 5 and 9 <= hour <= 17:  # Weekdays, between 9 AM and 5 PM JST
+    # Weekdays, between 9 AM and 5 PM JST
+    if 9 <= hour <= 17:
         try:
             slack_app.client.chat_postMessage(
                 channel=channel_id,
