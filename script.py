@@ -34,6 +34,8 @@ def send_reminder():
             print(f"Reminder sent at {now.strftime('%Y-%m-%d %H:%M:%S')} JST")
         except Exception as e:
             print(f"Error sending message: {e}")
+    else:
+        print(f"Reminder should not sent at {now.strftime('%Y-%m-%d %H:%M:%S')} JST")
 
 
 if __name__ == "__main__":
