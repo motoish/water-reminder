@@ -2,8 +2,6 @@
 name: Slack Bot Reminder
 
 on:
-  schedule:
-    - cron: "30 * * * 1-5"
   workflow_dispatch:
 
 jobs:
