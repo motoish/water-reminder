@@ -1,9 +1,16 @@
 import os
-from unittest.mock import Mock, patch, MagicMock
+from unittest.mock import MagicMock, Mock, patch
 
 import pytest
 
-# Import the module to test
+os.environ["SLACK_BOT_TOKEN"] = "test-token"
+os.environ["SLACK_SIGNING_SECRET"] = "test-secret"
+os.environ["SLACK_CHANNEL_ID"] = "test-channel"
+
+mock_app_instance = MagicMock()
+mock_app_patcher = patch("slack_bolt.App", return_value=mock_app_instance)
+mock_app_patcher.start()
+
 import script
 
 
