@@ -1,5 +1,5 @@
 slack_bolt==1.27.0
-black==25.11.0
+black==25.12.0
 isort==7.0.0
 pytz==2025.2
 pre_commit==4.5.0
