@@ -5,9 +5,6 @@
     ":semanticCommits",
     ":disableDependencyDashboard"
   ],
-  "reviewers": [
-    "motoish"
-  ],
   "semanticCommitType": "fix",
   "semanticCommitScope": "renovate",
   "timezone": "Asia/Tokyo",
