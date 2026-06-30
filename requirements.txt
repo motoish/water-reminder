@@ -1,4 +1,4 @@
-slack_bolt==1.28.0
+slack_bolt==1.29.0
 black==26.5.1
 isort==8.0.1
 pytz==2026.2
